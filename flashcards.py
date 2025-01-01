@@ -20,11 +20,7 @@ keys = list(demo_quiz_data.keys())
 random.shuffle(keys)
 demo_quiz_data = {key: demo_quiz_data[key] for key in keys}
 
-current_question = ""
-current_answer = ""
-
 card_turned = False
-
 index = 0
 
 while True:
@@ -42,24 +38,22 @@ while True:
                 index -= 1
                 card_turned = False
     
-    current_question = list(demo_quiz_data)[index]
-    current_answer = list(demo_quiz_data.values())[index]
-    current_question_object = FONT.render(current_question, True, "white")
-    current_question_rect = current_question_object.get_rect(center=(400, 400))
-    current_answer_object = FONT.render(current_answer, True, "white")
-    current_answer_rect = current_answer_object.get_rect(center=(400, 400))
-    current_index_object = FONT.render(f"{index+1}/{len(demo_quiz_data)}", True, "white")
-    current_index_rect = current_index_object.get_rect(center=(400, 600))
-    
+    SCREEN.fill(BG_COLOUR)
+    pygame.draw.rect(SCREEN, FLASHCARD_COLOUR, (150, 250, 500, 300))
+
     if not card_turned:
-        SCREEN.fill(BG_COLOUR)
-        pygame.draw.rect(SCREEN, FLASHCARD_COLOUR, (150, 250, 500, 300))
+        current_question = list(demo_quiz_data)[index]
+        current_question_object = FONT.render(current_question, True, "white")
+        current_question_rect = current_question_object.get_rect(center=(400, 400))
         SCREEN.blit(current_question_object, current_question_rect)
     else:
-        SCREEN.fill(BG_COLOUR)
-        pygame.draw.rect(SCREEN, FLIPPED_COLOUR, (150, 250, 500, 300))
+        current_answer = list(demo_quiz_data.values())[index]
+        current_answer_object = FONT.render(current_answer, True, "white")
+        current_answer_rect = current_answer_object.get_rect(center=(400, 400))
         SCREEN.blit(current_answer_object, current_answer_rect)
     
+    current_index_object = FONT.render(f"{index+1}/{len(demo_quiz_data)}", True, "white")
+    current_index_rect = current_index_object.get_rect(center=(400, 600))
     SCREEN.blit(current_index_object, current_index_rect)
     
     pygame.display.update()
