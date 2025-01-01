@@ -1,5 +1,7 @@
 import pygame
 import sys
+import json
+import random
 
 pygame.init()
 
@@ -10,17 +12,13 @@ BG_COLOUR = "#0a092d"
 FLASHCARD_COLOUR = "#2e3856"
 FLIPPED_COLOUR = "#595e6d"
 FONT = pygame.font.SysFont("STHeiti Medium", 30)
-# FONT = pygame.font.Font("Li-Xuke.ttf", 30)
-
 SCREEN.fill(BG_COLOUR)
 
-demo_quiz_data = {
-    "What is the capital of Canada?": "Ottawa",
-    "Who is the GOAT?": "Messi",
-    "What is the worst NHL team?": "Tie - Flames and Knights",
-    "3 * 3 + 3": "12",
-    "不": "bat1"
-}
+with open("card_set_general.json") as file:
+    demo_quiz_data = json.load(file)
+keys = list(demo_quiz_data.keys())
+random.shuffle(keys)
+demo_quiz_data = {key: demo_quiz_data[key] for key in keys}
 
 current_question = ""
 current_answer = ""
