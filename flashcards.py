@@ -1,3 +1,5 @@
+#!/usr/bin/python3
+
 import pygame
 import sys
 import json
@@ -23,7 +25,7 @@ class CardGame:
         self.screen = pygame.display.set_mode((800, 800))
         self.screen.fill(BG_COLOR)
 
-        with open(card_set) as file:
+        with open(card_set, encoding='utf-8') as file:
             unshuffled_demo_quiz_data = json.load(file)
         keys = list(unshuffled_demo_quiz_data.keys())
         random.shuffle(keys)
@@ -74,7 +76,8 @@ class CardGame:
         pygame.quit()
 
 def main():
-    game = CardGame(Path("card_set_general.json"))
+    card_set = Path("/Users/cstout16/OneDrive/Education/chinese/flashcards/card_set_general.json")
+    game = CardGame(card_set)
     game.play()
 
 if __name__ == "__main__":
