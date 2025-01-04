@@ -76,7 +76,7 @@ class CardGame:
         pygame.quit()
 
 def main():
-    card_set = Path("/Users/cstout16/OneDrive/Education/chinese/flashcards/card_set_general.json")
+    card_set = Path("/Users/cstout16/OneDrive/Education/chinese/flashcards/card_sets/cantonese_general.json")
     game = CardGame(card_set)
     game.play()
 
