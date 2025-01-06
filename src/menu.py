@@ -35,6 +35,8 @@ class MainMenu():
         for card_set_path in self.card_set_path_list:
             self.menu.insert(tk.END, snake_to_title(card_set_path.stem))
             self.menu.itemconfigure(tk.END)
+        self.menu.select_set(0)
+
 
         # Add a scrollbar if needed
         scrollbar = tk.Scrollbar(self.root)
@@ -43,29 +45,31 @@ class MainMenu():
         scrollbar.config(command=self.menu.yview)
 
 
-        self.menu.bind('<Double-Button>', self.on_double_click)
+        self.menu.bind('<Double-Button>', self.on_select)
+        self.menu.bind('<Return>', self.on_select)
         self.root.bind('<Escape>', self.on_escape)
 
         label.pack(pady=10)
         self.menu.pack()
 
         # Bind the selection event
-        self.menu.bind("<<ListboxSelect>>", self.on_select)
+        self.menu.bind("<<ListboxSelect>>", self.on_single_click)
 
+        self.menu.focus_set()
         self.root.mainloop()
         print("tkinter main loop done")
 
     def fill_card_set_list(self, card_set_directory):
         self.card_set_path_list = sorted(card_set_directory.glob("*.json"))
 
-    def on_select(self, event):
+    def on_single_click(self, event):
         w = event.widget
         index = int(w.curselection()[0])
         value = self.card_set_path_list[index]
         print(f"Highlighted: {value}")
 
 
-    def on_double_click(self, event):
+    def on_select(self, event):
         w = event.widget
         index = int(w.curselection()[0])
         self.value = self.card_set_path_list[index]
