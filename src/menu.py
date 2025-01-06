@@ -30,11 +30,11 @@ class MainMenu():
         label = tk.Label(self.root, text = "Card Sets") 
 
         # Create the Listbox
-        self.menu = tk.Listbox(self.root, selectforeground="red")
+        self.menu = tk.Listbox(self.root)
         self.fill_card_set_list(card_set_directory)
         for card_set_path in self.card_set_path_list:
             self.menu.insert(tk.END, snake_to_title(card_set_path.stem))
-            self.menu.itemconfigure(tk.END, background="grey")
+            self.menu.itemconfigure(tk.END)
 
         # Add a scrollbar if needed
         scrollbar = tk.Scrollbar(self.root)
