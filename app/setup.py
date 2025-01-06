@@ -10,10 +10,10 @@ Usage:
 
 from setuptools import setup
 
-APP = ['flashcards.py']
+APP = ['../flashcards.py']
 DATA_FILES = []
 OPTIONS = {
-    'iconfile':'img/paau2_image.icns',
+    'iconfile':'../img/paau2_image.icns',
 }
 
 setup(
