@@ -7,8 +7,9 @@ import sys
 
 class MainMenu():
     value = None
+    card_set_path_list = []
 
-    def __init__(self):
+    def __init__(self, card_set_directory: Path):
         self.root = tk.Tk()
         self.root.title("Run Flashcards")
 
@@ -28,8 +29,9 @@ class MainMenu():
 
         # Create the Listbox
         self.menu = tk.Listbox(self.root, selectforeground="red")
-        for i in range(20):
-            self.menu.insert(tk.END, f"Option {i+1}")
+        self.fill_card_set_list(card_set_directory)
+        for card_set_path in self.card_set_path_list:
+            self.menu.insert(tk.END, card_set_path.stem)
             self.menu.itemconfigure(tk.END, background="grey")
 
         # Add a scrollbar if needed
@@ -51,17 +53,20 @@ class MainMenu():
         self.root.mainloop()
         print("tkinter main loop done")
 
+    def fill_card_set_list(self, card_set_directory):
+        self.card_set_path_list = sorted(card_set_directory.glob("*.json"))
+
     def on_select(self, event):
         w = event.widget
         index = int(w.curselection()[0])
-        value = w.get(index)
+        value = self.card_set_path_list[index]
         print(f"Highlighted: {value}")
 
 
     def on_double_click(self, event):
         w = event.widget
         index = int(w.curselection()[0])
-        self.value = w.get(index)
+        self.value = self.card_set_path_list[index]
         print(f"Selected: {self.value}")
         self.root.destroy()
 
@@ -70,11 +75,10 @@ class MainMenu():
         print(f"Quitting")
         root = event.widget.winfo_toplevel()
         root.destroy()
-        # sys.exit()
 
 
 if __name__ == "__main__":
-    menu = MainMenu()
+    menu = MainMenu(Path("/Users/cstout16/OneDrive/Education/chinese/flashcards/card_sets"))
     print("got here")
     print(f"menu.value: {menu.value}")
 

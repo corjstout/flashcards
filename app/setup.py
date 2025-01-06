@@ -10,7 +10,7 @@ Usage:
 
 from setuptools import setup
 
-APP = ['../flashcards.py']
+APP = ['../main.py']
 DATA_FILES = []
 OPTIONS = {
     'iconfile':'../img/paau2_image.icns',
@@ -18,6 +18,7 @@ OPTIONS = {
 
 setup(
     app=APP,
+    name="Flashcards",
     data_files=DATA_FILES,
     options={'py2app': OPTIONS},
     setup_requires=['py2app'],
