@@ -7,11 +7,12 @@ import random
 from pathlib import Path
 from typing import Final
 
+from src.common import snake_to_title
+
 BG_COLOR: Final = "#0a092d"
 FLASHCARD_COLOR: Final = "#2e3856"
 FLIPPED_COLOR: Final = "#595e6d"
 TEXT_COLOR: Final = "white"
-APP_CAPTION: Final = "Cantonese Flash Cards"
 FONT_PACKAGE: Final = "STHeiti Medium"
 
 class CardGame:
@@ -20,7 +21,7 @@ class CardGame:
         self.index = 0
         self.quit_requested = False
         pygame.init()
-        pygame.display.set_caption(APP_CAPTION)
+        pygame.display.set_caption(snake_to_title(card_set.stem))
         self.font = pygame.font.SysFont(FONT_PACKAGE, 30)
         self.screen = pygame.display.set_mode((800, 800))
         self.screen.fill(BG_COLOR)

@@ -5,13 +5,15 @@ from tkinter import ttk
 from pathlib import Path
 import sys
 
+from src.common import snake_to_title
+
 class MainMenu():
     value = None
     card_set_path_list = []
 
     def __init__(self, card_set_directory: Path):
         self.root = tk.Tk()
-        self.root.title("Run Flashcards")
+        self.root.title("Flashcards")
 
         w = 400 # width for the Tk root
         h = 250 # height for the Tk root
@@ -31,7 +33,7 @@ class MainMenu():
         self.menu = tk.Listbox(self.root, selectforeground="red")
         self.fill_card_set_list(card_set_directory)
         for card_set_path in self.card_set_path_list:
-            self.menu.insert(tk.END, card_set_path.stem)
+            self.menu.insert(tk.END, snake_to_title(card_set_path.stem))
             self.menu.itemconfigure(tk.END, background="grey")
 
         # Add a scrollbar if needed
