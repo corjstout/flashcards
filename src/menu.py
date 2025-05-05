@@ -1,91 +1,93 @@
-#!/Users/cstout16/Library/CloudStorage/OneDrive-Personal/Education/chinese/flashcards/myenv/bin/python
+#!/opt/homebrew/bin/python3
 
-import tkinter as tk
-from tkinter import ttk
 from pathlib import Path
 import sys
+import tkinter as tk
+from typing import Final, List, Optional
 
-from src.common import snake_to_title
+from src.common import CARD_SET_DIR, snake_to_title
+
+MENU_WIDTH_PX: Final[int] = 400
+MENU_HEIGHT_PX: Final[int] = 250
+PADDING_PX: Final[int] = 10
+ROOT_LABEL: Final[str] = "Flashcards"
+MENU_LABEL: Final[str] = "Card Sets"
 
 class MainMenu():
-    value = None
-    card_set_path_list = []
+    #: Populated with paths to json files in the flashcards/card_sets directory
+    card_set_path_list: List[Path] = []
+    #: Will be populated with a path to a card set if one is selected
+    selection: Optional[Path] = None
 
-    def __init__(self, card_set_directory: Path):
+    def __init__(self, card_set_directory: Path) -> None:
+        """Create, populate, and initiate the UI."""
         self.root = tk.Tk()
-        self.root.title("Flashcards")
+        self.root.title(ROOT_LABEL)
 
-        w = 400 # width for the Tk root
-        h = 250 # height for the Tk root
+        # Use the screen width and height to set the root in the center
+        menu_left_px = (self.root.winfo_screenwidth()/2) - (MENU_WIDTH_PX/2)
+        menu_top_px = (self.root.winfo_screenheight()/2) - (MENU_HEIGHT_PX/2)
+        self.root.geometry('%dx%d+%d+%d' %
+            (MENU_WIDTH_PX, MENU_HEIGHT_PX,menu_left_px, menu_top_px))
 
-        # get screen width and height
-        ws = self.root.winfo_screenwidth() # width of the screen
-        hs = self.root.winfo_screenheight() # height of the screen
-        # calculate x and y coordinates for the Tk root window
-        x = (ws/2) - (w/2)
-        y = (hs/2) - (h/2)
+        # Create the label for the menu
+        label = tk.Label(self.root, text=MENU_LABEL)
 
-        self.root.geometry('%dx%d+%d+%d' % (w, h, x, y))
-
-        label = tk.Label(self.root, text = "Card Sets") 
-
-        # Create the Listbox
+        # Create and fill the menu
         self.menu = tk.Listbox(self.root)
         self.fill_card_set_list(card_set_directory)
         for card_set_path in self.card_set_path_list:
             self.menu.insert(tk.END, snake_to_title(card_set_path.stem))
             self.menu.itemconfigure(tk.END)
         self.menu.select_set(0)
+        self.menu.focus_set()
 
-
-        # Add a scrollbar if needed
+        # Create a scrollbar
         scrollbar = tk.Scrollbar(self.root)
-        scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
+
+        # Configure the scrollbar to scroll through the menu
         self.menu.config(yscrollcommand=scrollbar.set)
         scrollbar.config(command=self.menu.yview)
 
-
+        # Set up key bindings
         self.menu.bind('<Double-Button>', self.on_select)
         self.menu.bind('<Return>', self.on_select)
         self.root.bind('<Escape>', self.on_escape)
 
-        label.pack(pady=10)
+        # Assemble the elements in the root via packing
+        label.pack(pady=PADDING_PX)
+        scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
         self.menu.pack()
 
-        # Bind the selection event
-        self.menu.bind("<<ListboxSelect>>", self.on_single_click)
-
-        self.menu.focus_set()
+        # Start the interactive loop to enable user interface
         self.root.mainloop()
-        print("tkinter main loop done")
 
-    def fill_card_set_list(self, card_set_directory):
+    def fill_card_set_list(self, card_set_directory: Path) -> None:
+        """Populate a list of snake case names for each file in the provided directory.
+
+        :param card_set_directory: Path to a directory with card set jsons
+        """
         self.card_set_path_list = sorted(card_set_directory.glob("*.json"))
 
-    def on_single_click(self, event):
-        w = event.widget
-        index = int(w.curselection()[0])
-        value = self.card_set_path_list[index]
-        print(f"Highlighted: {value}")
+    def on_select(self, event: tk.Event) -> None:
+        """Set the value of the menu to the currently selected card set and exit the menu.
 
+        :param event: Object associated with a binding that the user has triggered
+        """
+        index = int(event.widget.curselection()[0])
+        self.selection = self.card_set_path_list[index]
+        self.on_escape(event)
 
-    def on_select(self, event):
-        w = event.widget
-        index = int(w.curselection()[0])
-        self.value = self.card_set_path_list[index]
-        print(f"Selected: {self.value}")
+    def on_escape(self, event: tk.Event) -> None:
+        """Destroy the menu
+
+        :param event: Object associated with a binding that the user has triggered
+        """
         self.root.destroy()
 
 
-    def on_escape(self, event):
-        print(f"Quitting")
-        root = event.widget.winfo_toplevel()
-        root.destroy()
-
-
 if __name__ == "__main__":
-    menu = MainMenu(Path("/Users/cstout16/OneDrive/Education/chinese/flashcards/card_sets"))
-    print("got here")
-    print(f"menu.value: {menu.value}")
+    menu = MainMenu(CARD_SET_DIR)
+    print(f"menu.value: {menu.selection}")
 
     

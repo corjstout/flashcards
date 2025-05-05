@@ -5,16 +5,12 @@ import sys
 
 from src.menu import MainMenu
 from src.flashcards import CardGame
-
-
-PROJECT_ROOT_DIR: Path = Path(__file__).resolve().parent
-DEFAULT_CARD_SET_DIR: Final = PROJECT_ROOT_DIR / "card_sets"
-
+from src.common import CARD_SET_DIR
 
 def main(argv: List[str]) -> int:
-	main_menu = MainMenu(DEFAULT_CARD_SET_DIR)
-	if main_menu.value:
-		card_game = CardGame(main_menu.value)
+	main_menu = MainMenu(CARD_SET_DIR)
+	if main_menu.selection:
+		card_game = CardGame(main_menu.selection)
 		card_game.play()
 
 if __name__ == "__main__":
