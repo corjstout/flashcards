@@ -5,9 +5,9 @@ import sys
 import json
 import random
 from pathlib import Path
-from typing import Final
+from typing import Final, List
 
-from src.common import snake_to_title
+from src.common import CARD_SET_DIR, snake_to_title
 
 BG_COLOR: Final = "#0a092d"
 FLASHCARD_COLOR: Final = "#2e3856"
@@ -16,21 +16,27 @@ TEXT_COLOR: Final = "white"
 FONT_PACKAGE: Final = "STHeiti Medium"
 
 class CardGame:
-    def __init__(self, card_set: Path):
+    def __init__(self, card_sets: List[Path]):
         self.card_turned = False
         self.index = 0
         self.quit_requested = False
         pygame.init()
-        pygame.display.set_caption(snake_to_title(card_set.stem))
+        if len(card_sets) > 1:
+            caption = "Set Combination"
+        else:
+            caption = snake_to_title(card_sets[0].stem)
+        pygame.display.set_caption(caption)
         self.font = pygame.font.SysFont(FONT_PACKAGE, 30)
         self.screen = pygame.display.set_mode((800, 800))
         self.screen.fill(BG_COLOR)
 
-        with open(card_set, encoding='utf-8') as file:
-            unshuffled_demo_quiz_data = json.load(file)
+        unshuffled_demo_quiz_data = dict()
+        for card_set in card_sets:
+            with open(card_set, encoding='utf-8') as file:
+                unshuffled_demo_quiz_data.update(json.load(file))
         keys = list(unshuffled_demo_quiz_data.keys())
         random.shuffle(keys)
-        self.demo_quiz_data = {key: unshuffled_demo_quiz_data[key] for key in keys}
+        self.demo_quiz_data = [(key, unshuffled_demo_quiz_data[key]) for key in keys]
 
     def blit_text(self, text: str, height: int):
         text_object = self.font.render(text, True, TEXT_COLOR)
@@ -62,9 +68,9 @@ class CardGame:
             # Generate text strings
             progress_text = f"{self.index+1}/{len(self.demo_quiz_data)}"
             if not self.card_turned:
-                card_text = list(self.demo_quiz_data)[self.index]
+                card_text = self.demo_quiz_data[self.index][0]
             else:
-                card_text = list(self.demo_quiz_data.values())[self.index]
+                card_text = self.demo_quiz_data[self.index][1]
             
             # Render the card and its text strings
             self.screen.fill(BG_COLOR)
@@ -77,8 +83,8 @@ class CardGame:
         pygame.quit()
 
 def main():
-    card_set = Path("/Users/cstout16/OneDrive/Education/chinese/flashcards/card_sets/cantonese_general.json")
-    game = CardGame(card_set)
+    card_set = Path(CARD_SET_DIR / "colors.json")
+    game = CardGame([card_set])
     game.play()
 
 if __name__ == "__main__":

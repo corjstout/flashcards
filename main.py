@@ -9,8 +9,8 @@ from src.common import CARD_SET_DIR
 
 def main(argv: List[str]) -> int:
 	main_menu = MainMenu(CARD_SET_DIR)
-	if main_menu.selection:
-		card_game = CardGame(main_menu.selection)
+	if main_menu.selected_card_sets:
+		card_game = CardGame(main_menu.selected_card_sets)
 		card_game.play()
 
 if __name__ == "__main__":

@@ -16,8 +16,8 @@ MENU_LABEL: Final[str] = "Card Sets"
 class MainMenu():
     #: Populated with paths to json files in the flashcards/card_sets directory
     card_set_path_list: List[Path] = []
-    #: Will be populated with a path to a card set if one is selected
-    selection: Optional[Path] = None
+    #: Will be populated with one or more card set paths if selected
+    selected_card_sets: Optional[List[Path]] = None
 
     def __init__(self, card_set_directory: Path) -> None:
         """Create, populate, and initiate the UI."""
@@ -34,7 +34,7 @@ class MainMenu():
         label = tk.Label(self.root, text=MENU_LABEL)
 
         # Create and fill the menu
-        self.menu = tk.Listbox(self.root)
+        self.menu = tk.Listbox(self.root, selectmode=tk.EXTENDED)
         self.fill_card_set_list(card_set_directory)
         for card_set_path in self.card_set_path_list:
             self.menu.insert(tk.END, snake_to_title(card_set_path.stem))
@@ -70,12 +70,11 @@ class MainMenu():
         self.card_set_path_list = sorted(card_set_directory.glob("*.json"))
 
     def on_select(self, event: tk.Event) -> None:
-        """Set the value of the menu to the currently selected card set and exit the menu.
+        """Set the the currently selected card sets and exit the menu.
 
         :param event: Object associated with a binding that the user has triggered
         """
-        index = int(event.widget.curselection()[0])
-        self.selection = self.card_set_path_list[index]
+        self.selected_card_sets = [self.card_set_path_list[index] for index in event.widget.curselection()]
         self.on_escape(event)
 
     def on_escape(self, event: tk.Event) -> None:
@@ -88,6 +87,8 @@ class MainMenu():
 
 if __name__ == "__main__":
     menu = MainMenu(CARD_SET_DIR)
-    print(f"menu.value: {menu.selection}")
+    print("menu selection:")
+    for card_set in menu.selected_card_sets:
+        print(f"  {card_set}")
 
     
