@@ -2,4 +2,5 @@
 dist/
 build/
 .eggs/
+card_sets/
 __pycache__/
