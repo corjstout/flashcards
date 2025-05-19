@@ -1,12 +1,13 @@
 
 from pathlib import Path
-from typing import Final, List
 import sys
+from typing import Final, List
 
-from src.menu import MainMenu
-from src.flashcards import CardGame
-from src.common import CACHE_FILE
 from src.cache import retrieve_card_set_dir
+from src.common import CACHE_FILE
+from src.flashcards import CardGame
+from src.menu import MainMenu
+
 
 def main(argv: List[str]) -> int:
 	card_set_dir = retrieve_card_set_dir()
