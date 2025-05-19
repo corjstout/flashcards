@@ -1,11 +1,12 @@
-#!/opt/homebrew/bin/python3
+#!/usr/bin/python3
 
 from pathlib import Path
 import sys
 import tkinter as tk
 from typing import Final, List, Optional
 
-from src.common import CARD_SET_DIR, snake_to_title
+from src.cache import prompt_for_card_set_dir_to_save, retrieve_card_set_dir
+from src.common import snake_to_title
 
 MENU_WIDTH_PX: Final[int] = 400
 MENU_HEIGHT_PX: Final[int] = 250
@@ -36,14 +37,12 @@ class MainMenu():
         # Create and fill the menu
         self.menu = tk.Listbox(self.root, selectmode=tk.EXTENDED)
         self.fill_card_set_list(card_set_directory)
-        for card_set_path in self.card_set_path_list:
-            self.menu.insert(tk.END, snake_to_title(card_set_path.stem))
-            self.menu.itemconfigure(tk.END)
-        self.menu.select_set(0)
-        self.menu.focus_set()
 
         # Create a scrollbar
         scrollbar = tk.Scrollbar(self.root)
+
+        # Create a button to select a card set directory
+        button_set_directory = tk.Button(self.root, text="Set Workspace", command=self.on_button_click_set_workspace)
 
         # Configure the scrollbar to scroll through the menu
         self.menu.config(yscrollcommand=scrollbar.set)
@@ -55,6 +54,7 @@ class MainMenu():
         self.root.bind('<Escape>', self.on_escape)
 
         # Assemble the elements in the root via packing
+        button_set_directory.pack(side=tk.LEFT, anchor="nw", pady=PADDING_PX)
         label.pack(pady=PADDING_PX)
         scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
         self.menu.pack()
@@ -68,6 +68,12 @@ class MainMenu():
         :param card_set_directory: Path to a directory with card set jsons
         """
         self.card_set_path_list = sorted(card_set_directory.glob("*.json"))
+        self.menu.delete(0,tk.END)
+        for card_set_path in self.card_set_path_list:
+            self.menu.insert(tk.END, snake_to_title(card_set_path.stem))
+            self.menu.itemconfigure(tk.END)
+        self.menu.select_set(0)
+        self.menu.focus_set()
 
     def on_select(self, event: tk.Event) -> None:
         """Set the the currently selected card sets and exit the menu.
@@ -77,18 +83,17 @@ class MainMenu():
         self.selected_card_sets = [self.card_set_path_list[index] for index in event.widget.curselection()]
         self.on_escape(event)
 
+    def on_button_click_set_workspace(self) -> None:
+        """Prompt user for new workspace where card set jsons are available."""
+        prompt_for_card_set_dir_to_save()
+        card_set_dir = retrieve_card_set_dir()
+        self.fill_card_set_list(card_set_dir)
+        self.menu.focus_force()
+
     def on_escape(self, event: tk.Event) -> None:
         """Destroy the menu
 
         :param event: Object associated with a binding that the user has triggered
         """
+        self.root.quit()
         self.root.destroy()
-
-
-if __name__ == "__main__":
-    menu = MainMenu(CARD_SET_DIR)
-    print("menu selection:")
-    for card_set in menu.selected_card_sets:
-        print(f"  {card_set}")
-
-    

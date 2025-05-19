@@ -7,7 +7,7 @@ import random
 from pathlib import Path
 from typing import Final, List
 
-from src.common import CARD_SET_DIR, snake_to_title
+from src.common import snake_to_title
 
 BG_COLOR: Final = "#0a092d"
 FLASHCARD_COLOR: Final = "#2e3856"
@@ -81,11 +81,3 @@ class CardGame:
 
         # Quit the game if requested
         pygame.quit()
-
-def main():
-    card_set = Path(CARD_SET_DIR / "colors.json")
-    game = CardGame([card_set])
-    game.play()
-
-if __name__ == "__main__":
-    main()
