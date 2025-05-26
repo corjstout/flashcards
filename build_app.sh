@@ -12,7 +12,7 @@ function clean_workspace() {
 
 function generate_app() {
     cd "${BUILD_DIR}"
-    python3.9 setup.py py2app -A
+    python3.9 setup.py py2app
 }
 
 function main() {

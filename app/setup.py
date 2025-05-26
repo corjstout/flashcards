@@ -10,16 +10,16 @@ Usage:
 
 from setuptools import setup
 
-APP = ['../main.py']
+APP = ["../main.py"]
 DATA_FILES = []
 OPTIONS = {
-    'iconfile':'../img/paau2_image.icns',
+    "iconfile": "../img/paau2_image.icns",
 }
 
 setup(
     app=APP,
     name="Flashcards",
     data_files=DATA_FILES,
-    options={'py2app': OPTIONS},
-    setup_requires=['py2app'],
+    options={"py2app": OPTIONS},
+    setup_requires=["py2app"],
 )
