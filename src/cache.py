@@ -2,6 +2,7 @@
 
 import json
 from pathlib import Path
+import tkinter as tk
 from tkinter import filedialog
 from typing import Final
 
@@ -11,6 +12,9 @@ CARD_SET_PATH_KEY: Final[str] = "card_set_path"
 
 def prompt_for_card_set_dir_to_save() -> None:
     """Create a GUI to prompt the user for a directory to load card sets from."""
+    root = tk.Tk()
+    root.withdraw()
+
     cache_dict = {}
     cache_dict[CARD_SET_PATH_KEY] = filedialog.askdirectory() # Opens a dialog box to select a directory
     if not cache_dict[CARD_SET_PATH_KEY] or not Path(cache_dict[CARD_SET_PATH_KEY]).is_dir():
